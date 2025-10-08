@@ -1,209 +1,325 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Quiz: Erkennst du rechte Codes?</title>
-  <style>
-    :root{--bg:#0f1724;--card:#0b1220;--muted:#9aa4b2;--accent:#3b82f6;--correct:#16a34a;--wrong:#ef4444}
-    *{box-sizing:border-box}
-    body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:#0f1724; color:#e6eef6; margin:0; padding:24px; display:flex; align-items:center; justify-content:center; min-height:100vh}
-    .wrap{width:930px; max-width:96vw}
-    header{display:flex; align-items:center; justify-content:space-between; margin-bottom:18px}
-    h1{font-size:20px; margin:0}
-    .controls button{background:var(--wrong); border:0; color:white; padding:10px 14px; border-radius:8px; cursor:pointer; font-weight:700}
-    .card{background:var(--card); padding:18px; border-radius:12px; box-shadow:0 8px 30px rgba(2,6,23,0.6)}
-    .comment{display:flex; gap:14px}
-    .avatar{width:56px; height:56px; border-radius:12px; background:#1e293b; display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--accent); font-size:18px}
-    .meta{flex:1}
-    .user{display:flex; gap:8px; align-items:center}
-    .username{font-weight:700}
-    .time{color:var(--muted); font-size:13px}
-    .text{margin-top:10px; font-size:15px; line-height:1.5; color:#dfeaf6}
-    .actions{display:flex; gap:10px; margin-top:16px}
-    .btn{flex:1; padding:12px; border-radius:10px; border:0; cursor:pointer; font-weight:700; font-size:15px}
-    .btn.yes{background:var(--accent); color:#fff}
-    .btn.no{background:var(--wrong); color:#fff}
-    .feedback{margin-top:14px; padding:12px; border-radius:10px; background:rgba(255,255,255,0.05)}
-    .feedback.correct{border:2px solid var(--correct)}
-    .feedback.wrong{border:2px solid var(--wrong)}
-    .explain{margin-top:8px; color:var(--muted); font-size:14px}
-    .nav{display:flex; gap:8px; margin-top:12px; align-items:center}
-    .score{margin-left:auto; color:var(--muted)}
-    .hidden{display:none}
-    .result{display:flex; flex-direction:column; gap:12px; align-items:center; text-align:center}
-    .big-score{font-size:36px; font-weight:800}
-    @media (max-width:720px){.comment{flex-direction:column}.avatar{width:48px;height:48px}
-      .actions{flex-direction:column}.btn{width:100%}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WDR Lokalzeit Community Management Quiz</title>
+<style>
+  body {
+    background-color: #2D2D2D;
+    color: #EFEFEF;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
+  .hidden { display: none; }
+  button {
+    background-color: #B5456E;
+    color: #EFEFEF;
+    border: none;
+    padding: 12px 24px;
+    margin: 10px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  button:hover { opacity: 0.9; }
+  button.correct { background-color: #2E8B57 !important; }
+  button.wrong { background-color: #B22222 !important; }
+  .container {
+    max-width: 600px;
+    margin: 20px auto;
+  }
+  .comment {
+    background-color: #3B3B3B;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: left;
+    margin: 10px 0;
+    cursor: pointer;
+  }
+  .answers {
+    margin-top: 10px;
+  }
+  .explanation {
+    background-color: #4B4B4B;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 8px;
+    text-align: left;
+  }
+  img {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  .navigation {
+    margin-top: 30px;
+  }
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1>Quiz: Erkennst du rechte Codes?</h1>
-      <div class="controls">
-        <button id="restartBtn">Neu beginnen</button>
-      </div>
-    </header>
 
-    <main class="card" id="quizCard">
-      <div style="display:flex; align-items:center; gap:12px;">
-        <div>Kommentar <span id="pos">1</span> / 20</div>
-        <div class="score">Score: <strong id="score">0</strong></div>
-      </div>
+<!-- Startseite -->
+<div id="startPage" class="container">
+  <h1>Willkommen zum WDR Lokalzeit Community Management Quiz!</h1>
+  <p>Im Community Management kümmern wir uns unter anderem um alle Kommentare, die unter unseren Posts landen.
+     Wir antworten, moderieren, verweisen weiter und in einigen Ausnahmefällen löschen wir auch Kommentare.<br><br>
+     Du möchtest deine Community Management Fähigkeiten auf die Probe stellen? Wir haben vier reale Beispiele aus unserem Arbeitsalltag mitgebracht.
+     Du siehst erst den Post, dann ausgewählte, anonymisierte Kommentare aus unserer Community dazu.
+     Du entscheidest dann, wie du mit den Kommentaren umgegangen wärst und erfährst danach, ob und warum wir das genau so oder anders gemacht hätten.<br><br>
+     Bereit? Dann klicke auf "Los geht’s!"</p>
+  <button onclick="startQuiz()">Los geht’s!</button>
+</div>
 
-      <div class="comment" style="margin-top:12px;">
-        <div class="avatar" id="avatar">AB</div>
-        <div class="meta">
-          <div class="user"><div class="username" id="username">Benutzer</div><div class="time" id="usertime">vor 2 Std.</div></div>
-          <div class="text" id="commentText">...</div>
-        </div>
-      </div>
-
-      <div class="actions">
-        <button class="btn yes" id="btnYes">Enthält rechten Code</button>
-        <button class="btn no" id="btnNo">Kein rechter Code</button>
-      </div>
-
-      <div id="feedback" class="feedback hidden">
-        <div id="fbTitle" style="font-weight:800">...</div>
-        <div id="fbExplain" class="explain">...</div>
-      </div>
-
-      <div class="nav">
-        <button id="nextBtn" style="padding:10px 14px; border-radius:8px; background:var(--accent); color:#fff; border:0; font-weight:700;">Weiter</button>
-      </div>
-
-      <div id="endScreen" class="hidden" style="margin-top:18px">
-        <div class="result card" style="padding:18px;">
-          <div class="big-score" id="finalScore">0 / 20</div>
-          <div id="finalStats">Du hast <span id="finalCorrect">0</span> richtig erkannt und <span id="finalWrong">0</span> falsch.</div>
-        </div>
-      </div>
-
-    </main>
+<!-- Quizseiten -->
+<div id="quizPage" class="hidden container">
+  <div id="progress">1/4</div>
+  <img id="postImage" src="Post1.png" alt="Post 1">
+  <div id="comments"></div>
+  <div class="navigation">
+    <button id="prevBtn" onclick="prevPost()">Zum vorherigen Post</button>
+    <button id="nextBtn" onclick="nextPost()">Zum nächsten Post</button>
   </div>
+</div>
 
-  <script>
-    // Realistischere Kommentare, 20 Einträge, 12 mit rechten Codes
-    const COMMENTS = [
-      {user: 'Stefan', time: 'vor 2 Std.', text: 'Typisch Lügenpresse, immer nur das schreiben, was die Politik will.', code: true, explain: '„Lügenpresse“ ist ein rechtsextrem verwendeter Kampfbegriff gegen Medien.'},
-      {user: 'Mareike', time: 'vor 1 Tag', text: 'Remigration wäre doch längst überfällig, sonst haben unsere Kinder keine Zukunft.', code: true, explain: '„Remigration“ wird in rechten Kreisen als Schlagwort für Vertreibungsfantasien benutzt.'},
-      {user: 'Tom', time: 'vor 5 Min.', text: 'Haha, wieder 88 Kommentare unter dem Beitrag 😂', code: true, explain: 'Die Zahl 88 steht als Code für „Heil Hitler“ (H = 8. Buchstabe).'},
-      {user: 'Sandra', time: 'gestern', text: 'Freu mich schon aufs Wochenende, endlich mal abschalten!', code: false, explain: ''},
-      {user: 'Dennis', time: 'vor 3 Std.', text: 'Das ist doch Umvolkung pur, man sieht es doch überall.', code: true, explain: '„Umvolkung“ ist eine rechtsextreme Verschwörungserzählung.'},
-      {user: 'Janine', time: 'heute', text: 'Kaffee ohne Zucker ist einfach nicht mein Ding.', code: false, explain: ''},
-      {user: 'Patrick', time: 'vor 2 Tagen', text: '14/88, das verstehen nur die richtigen Leute hier 😉', code: true, explain: '„14/88“ kombiniert die „14 Words“ mit 88 (Heil Hitler).'},
-      {user: 'Katrin', time: 'vor 6 Std.', text: 'ZOG zieht doch sowieso die Strippen, merkt ihr das nicht?', code: true, explain: '„ZOG“ (Zionist Occupied Government) ist eine antisemitische Verschwörungserzählung.'},
-      {user: 'Matthias', time: 'vor 4 Min.', text: 'Der neue Song ist mega, läuft bei mir in Dauerschleife!', code: false, explain: ''},
-      {user: 'Julia', time: 'vor 8 Std.', text: 'Diese Volksverräter im Bundestag, alle gleich.', code: true, explain: '„Volksverräter“ ist ein abwertender NS-Begriff, heute in rechten Milieus wiederverwendet.'},
-      {user: 'Andre', time: 'vor 1 Std.', text: '🐸 Meme des Tages, musste so lachen 😂', code: true, explain: 'Der Frosch (Pepe) ist ein Meme, das von der Alt-Right vereinnahmt wurde.'},
-      {user: 'Monika', time: 'vor 12 Min.', text: 'Hab das Rezept ausprobiert, echt lecker!', code: false, explain: ''},
-      {user: 'Ralf', time: 'vor 3 Tagen', text: 'Das Sonnenrad-Tattoo bei dem Typen gestern… schwierig.', code: true, explain: 'Das Sonnenrad ist ein Symbol, das in Neonazi-Szenen verwendet wird.'},
-      {user: 'Ute', time: 'vor 9 Std.', text: 'Wir brauchen wieder mehr Sicherheit in den Städten.', code: false, explain: ''},
-      {user: 'Michael', time: 'vor 10 Std.', text: 'Unsere Kinder zuerst – das sollte selbstverständlich sein.', code: false, explain: ''},
-      {user: 'Kevin', time: 'vor 2 Tagen', text: 'Remigration jetzt ✌️', code: true, explain: 'Das Wort „Remigration“ in Kombination mit Symbolen wird in rechten Zusammenhängen genutzt.'},
-      {user: 'Claudia', time: 'vor 5 Std.', text: '88 Gründe, warum Urlaub besser ist als Arbeiten 😅', code: false, explain: ''},
-      {user: 'Holger', time: 'vor 6 Tagen', text: 'Heimat ist wichtig, das hat nichts mit Hass zu tun.', code: false, explain: ''},
-      {user: 'Sebastian', time: 'vor 7 Std.', text: 'Wir müssen die 14 words nicht ausschreiben, jeder versteht das.', code: true, explain: 'Die „14 words“ sind ein rechtsextremer Slogan.'},
-      {user: 'Nadine', time: 'vor 2 Min.', text: 'Typisch, wieder so ein Systemling in den Talkshows.', code: true, explain: '„Systemling“ ist ein abwertender Begriff für Menschen, die als Unterstützer des politischen Systems gelten.'}
-    ];
+<!-- Ergebnisseite -->
+<div id="resultPage" class="hidden container">
+  <h2>Ergebnis</h2>
+  <p id="scoreDisplay"></p>
+  <button onclick="restartQuiz()">Neu beginnen</button>
+</div>
 
-    const TOTAL = 20;
-    let order = [];
-    let idx = 0;
-    let score = 0;
-    let answered = false;
-
-    const posEl = document.getElementById('pos');
-    const avatarEl = document.getElementById('avatar');
-    const userEl = document.getElementById('username');
-    const timeEl = document.getElementById('usertime');
-    const textEl = document.getElementById('commentText');
-    const scoreEl = document.getElementById('score');
-    const fb = document.getElementById('feedback');
-    const fbTitle = document.getElementById('fbTitle');
-    const fbExplain = document.getElementById('fbExplain');
-    const nextBtn = document.getElementById('nextBtn');
-    const btnYes = document.getElementById('btnYes');
-    const btnNo = document.getElementById('btnNo');
-    const restartBtn = document.getElementById('restartBtn');
-    const endScreen = document.getElementById('endScreen');
-    const finalScore = document.getElementById('finalScore');
-    const finalCorrect = document.getElementById('finalCorrect');
-    const finalWrong = document.getElementById('finalWrong');
-
-    function shuffleArray(a){
-      for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]}
-      return a;
-    }
-
-    function buildRound(){
-      order = shuffleArray([...Array(TOTAL).keys()]);
-      idx = 0; score = 0; answered = false;
-      scoreEl.textContent = score;
-      posEl.textContent = idx+1;
-      fb.classList.add('hidden');
-      endScreen.classList.add('hidden');
-      showCurrent();
-    }
-
-    function showCurrent(){
-      const c = COMMENTS[order[idx]];
-      avatarEl.textContent = initials(c.user);
-      userEl.textContent = c.user;
-      timeEl.textContent = c.time;
-      textEl.textContent = c.text;
-      posEl.textContent = (idx+1);
-      answered = false;
-      fb.classList.add('hidden');
-      nextBtn.disabled = true;
-    }
-
-    function initials(name){
-      return name.split(' ').map(n=>n[0]).slice(0,2).join('').toUpperCase();
-    }
-
-    function handleAnswer(isRightChoice){
-      if(answered) return;
-      answered = true;
-      const c = COMMENTS[order[idx]];
-      const correct = c.code;
-      const userCorrect = (isRightChoice === correct);
-      if(userCorrect){ score++; scoreEl.textContent = score }
-
-      fb.classList.remove('hidden');
-      fbTitle.textContent = userCorrect ? 'Richtig!' : 'Falsch';
-      fb.classList.toggle('correct', userCorrect);
-      fb.classList.toggle('wrong', !userCorrect);
-
-      if(c.code){
-        fbExplain.innerHTML = '<strong>Erklärung:</strong> '+ c.explain;
-      } else {
-        fbExplain.innerHTML = 'In diesem Kommentar ist kein bekannter rechter Code enthalten.';
+<script>
+const posts = [
+  {
+    image: "Post1.png",
+    comments: [
+      {
+        text: "Immer diese neuen Regeln... kann man nicht einfach alles beim Alten lassen?",
+        answers: [
+          { text: "Ignorieren, da unproblematisch.", correct: true, explanation: "Richtig! Hier handelt es sich um eine harmlose Meinungsäußerung." },
+          { text: "Kommentar löschen.", correct: false, explanation: "Falsch. Es liegt kein Regelverstoß vor." },
+          { text: "Verwarnen, weil das gegen die Hausordnung verstößt.", correct: false, explanation: "Falsch. Es gibt keinen Verstoß." },
+          { text: "Antworten mit einem Hinweis auf unsere Regeln.", correct: false, explanation: "Nicht nötig – keine Regelverletzung." }
+        ]
+      },
+      {
+        text: "Das ist wieder typisch für die da oben! Alles nur Lügenpresse!",
+        answers: [
+          { text: "Kommentar löschen, da pauschale Medienfeindlichkeit.", correct: true, explanation: "Richtig! Der Begriff 'Lügenpresse' ist ein diffamierender Code gegen Medien." },
+          { text: "Ignorieren.", correct: false, explanation: "Falsch. Der Kommentar enthält einen problematischen Begriff." },
+          { text: "Freundlich zustimmen.", correct: false, explanation: "Falsch. Das wäre journalistisch unangemessen." },
+          { text: "Mit Humor kontern.", correct: false, explanation: "Falsch. Das würde den Kommentar verharmlosen." }
+        ]
+      },
+      {
+        text: "Früher war alles besser, seit die ganzen Fremden hier sind, geht’s bergab.",
+        answers: [
+          { text: "Kommentar löschen, da rassistischer Unterton.", correct: true, explanation: "Richtig! Hier wird ein fremdenfeindlicher Zusammenhang hergestellt." },
+          { text: "Antworten und um Präzisierung bitten.", correct: false, explanation: "Falsch. Der Kommentar ist klar diskriminierend." },
+          { text: "Ignorieren.", correct: false, explanation: "Falsch. Das wäre nicht angemessen." },
+          { text: "Zustimmen, um keine Diskussion auszulösen.", correct: false, explanation: "Falsch. Das verstößt gegen unsere Werte." }
+        ]
       }
-
-      nextBtn.disabled = false;
-      nextBtn.textContent = idx === TOTAL-1 ? 'Ergebnis anzeigen' : 'Weiter';
-    }
-
-    btnYes.addEventListener('click', ()=>handleAnswer(true));
-    btnNo.addEventListener('click', ()=>handleAnswer(false));
-
-    nextBtn.addEventListener('click', ()=>{
-      if(!answered) return;
-      if(idx < TOTAL-1){ idx++; showCurrent(); }
-      else {
-        endScreen.classList.remove('hidden');
-        finalScore.textContent = score + ' / ' + TOTAL;
-        finalCorrect.textContent = score;
-        finalWrong.textContent = TOTAL - score;
+    ]
+  },
+  {
+    image: "Post2.png",
+    comments: [
+      {
+        text: "Wieder so ein Beitrag, der uns allen zeigen soll, wie schlimm Deutschland ist...",
+        answers: [
+          { text: "Ignorieren, keine Regelverletzung.", correct: true, explanation: "Richtig! Eine subjektive Meinung ohne beleidigende Sprache." },
+          { text: "Löschen.", correct: false, explanation: "Falsch. Keine Regelverletzung." },
+          { text: "Mit Quellen widersprechen.", correct: false, explanation: "Nicht nötig, da kein Falschinformations-Vorwurf." },
+          { text: "Verwarnen.", correct: false, explanation: "Falsch." }
+        ]
+      },
+      {
+        text: "Na klar, Hauptsache wieder ein Beitrag über Migranten...",
+        answers: [
+          { text: "Kommentar löschen, da diskriminierend.", correct: true, explanation: "Richtig! Der Kommentar wertet Menschen aufgrund ihrer Herkunft ab." },
+          { text: "Ignorieren.", correct: false, explanation: "Falsch. Es handelt sich um diskriminierende Sprache." },
+          { text: "Freundlich zustimmen.", correct: false, explanation: "Falsch." },
+          { text: "Hinweis auf Pressefreiheit.", correct: false, explanation: "Nicht zielführend." }
+        ]
+      },
+      {
+        text: "Ihr seid doch eh alle von den Grünen bezahlt!",
+        answers: [
+          { text: "Antworten und richtigstellen.", correct: true, explanation: "Richtig! Eine sachliche Richtigstellung hilft, Desinformation zu begegnen." },
+          { text: "Löschen.", correct: false, explanation: "Falsch. Keine beleidigende Sprache." },
+          { text: "Ignorieren.", correct: false, explanation: "Nicht ideal – Falschinformation bleibt bestehen." },
+          { text: "Sarkastisch antworten.", correct: false, explanation: "Falsch. Das wirkt unprofessionell." }
+        ]
       }
+    ]
+  },
+  {
+    image: "Post3.png",
+    comments: [
+      {
+        text: "Warum berichtet ihr nicht mal über die wirklichen Probleme? Z.B. Kriminalität durch Migranten!",
+        answers: [
+          { text: "Antworten mit Fakten und Quellen.", correct: true, explanation: "Richtig! Hier kann sachliche Aufklärung helfen." },
+          { text: "Ignorieren.", correct: false, explanation: "Falsch. Der Kommentar suggeriert falsche Zusammenhänge." },
+          { text: "Löschen.", correct: false, explanation: "Falsch. Noch kein direkter Regelverstoß." },
+          { text: "Zustimmen.", correct: false, explanation: "Falsch." }
+        ]
+      },
+      {
+        text: "Bei euch kann man ja gar nichts mehr sagen, ohne dass gleich gelöscht wird!",
+        answers: [
+          { text: "Sachlich erklären, wann gelöscht wird.", correct: true, explanation: "Richtig! Transparente Kommunikation stärkt Vertrauen." },
+          { text: "Ignorieren.", correct: false, explanation: "Falsch. Hier hilft Aufklärung." },
+          { text: "Sarkastisch antworten.", correct: false, explanation: "Falsch." },
+          { text: "Löschen.", correct: false, explanation: "Falsch. Kein Regelverstoß." }
+        ]
+      },
+      {
+        text: "Ihr seid so eine Propaganda-Maschine!",
+        answers: [
+          { text: "Antworten und um Beispiele bitten.", correct: true, explanation: "Richtig! So bleibt der Dialog offen." },
+          { text: "Löschen.", correct: false, explanation: "Falsch." },
+          { text: "Ignorieren.", correct: false, explanation: "Nicht ideal." },
+          { text: "Zustimmen.", correct: false, explanation: "Falsch." }
+        ]
+      }
+    ]
+  },
+  {
+    image: "Post4.png",
+    comments: [
+      {
+        text: "Ich kenne niemanden, der euch noch ernst nimmt.",
+        answers: [
+          { text: "Ignorieren.", correct: true, explanation: "Richtig! Kein Regelverstoß." },
+          { text: "Löschen.", correct: false, explanation: "Falsch." },
+          { text: "Antworten und um Begründung bitten.", correct: false, explanation: "Nicht nötig." },
+          { text: "Verwarnen.", correct: false, explanation: "Falsch." }
+        ]
+      },
+      {
+        text: "Das passiert, wenn man alles für die Ausländer tut.",
+        answers: [
+          { text: "Löschen.", correct: true, explanation: "Richtig! Der Kommentar enthält fremdenfeindliche Sprache." },
+          { text: "Ignorieren.", correct: false, explanation: "Falsch." },
+          { text: "Antworten.", correct: false, explanation: "Falsch." },
+          { text: "Verwarnen.", correct: false, explanation: "Falsch." }
+        ]
+      },
+      {
+        text: "Ihr seid wirklich nur noch peinlich!",
+        answers: [
+          { text: "Ignorieren.", correct: true, explanation: "Richtig! Kritik, aber kein Verstoß." },
+          { text: "Löschen.", correct: false, explanation: "Falsch." },
+          { text: "Verwarnen.", correct: false, explanation: "Falsch." },
+          { text: "Antworten mit Entschuldigung.", correct: false, explanation: "Nicht nötig." }
+        ]
+      }
+    ]
+  }
+];
+
+let currentPost = 0;
+let score = 0;
+
+function startQuiz() {
+  document.getElementById('startPage').classList.add('hidden');
+  document.getElementById('quizPage').classList.remove('hidden');
+  showPost();
+}
+
+function showPost() {
+  const post = posts[currentPost];
+  document.getElementById('progress').textContent = `${currentPost + 1}/4`;
+  document.getElementById('postImage').src = post.image;
+
+  const commentsDiv = document.getElementById('comments');
+  commentsDiv.innerHTML = '';
+
+  post.comments.forEach((comment, cIndex) => {
+    const commentDiv = document.createElement('div');
+    commentDiv.className = 'comment';
+    commentDiv.innerHTML = comment.text;
+
+    const answersDiv = document.createElement('div');
+    answersDiv.className = 'answers hidden';
+
+    comment.answers.forEach((answer, aIndex) => {
+      const btn = document.createElement('button');
+      btn.textContent = answer.text;
+      btn.onclick = () => handleAnswer(btn, answer, commentDiv, cIndex, aIndex);
+      answersDiv.appendChild(btn);
     });
 
-    restartBtn.addEventListener('click', ()=>{ buildRound(); });
+    const explanationDiv = document.createElement('div');
+    explanationDiv.className = 'explanation hidden';
+    answersDiv.appendChild(explanationDiv);
 
-    buildRound();
-  </script>
+    commentDiv.onclick = () => {
+      answersDiv.classList.remove('hidden');
+      commentDiv.onclick = null; // Nur einmal öffnen
+    };
+
+    commentDiv.appendChild(answersDiv);
+    commentsDiv.appendChild(commentDiv);
+  });
+
+  document.getElementById('prevBtn').style.display = currentPost === 0 ? 'none' : 'inline-block';
+  document.getElementById('nextBtn').textContent = currentPost === posts.length - 1 ? "Zum Ergebnis" : "Zum nächsten Post";
+}
+
+function handleAnswer(btn, answer, commentDiv, cIndex, aIndex) {
+  const answersDiv = commentDiv.querySelector('.answers');
+  const explanationDiv = answersDiv.querySelector('.explanation');
+
+  const buttons = answersDiv.querySelectorAll('button');
+  buttons.forEach(b => b.disabled = true);
+
+  if (answer.correct) {
+    btn.classList.add('correct');
+    score++;
+  } else {
+    btn.classList.add('wrong');
+  }
+
+  explanationDiv.textContent = answer.explanation;
+  explanationDiv.classList.remove('hidden');
+}
+
+function nextPost() {
+  if (currentPost < posts.length - 1) {
+    currentPost++;
+    showPost();
+  } else {
+    showResult();
+  }
+}
+
+function prevPost() {
+  if (currentPost > 0) {
+    currentPost--;
+    showPost();
+  }
+}
+
+function showResult() {
+  document.getElementById('quizPage').classList.add('hidden');
+  document.getElementById('resultPage').classList.remove('hidden');
+  document.getElementById('scoreDisplay').textContent = `${score}/12 Punkten richtig`;
+}
+
+function restartQuiz() {
+  currentPost = 0;
+  score = 0;
+  document.getElementById('resultPage').classList.add('hidden');
+  document.getElementById('startPage').classList.remove('hidden');
+}
+</script>
+
 </body>
 </html>
+
