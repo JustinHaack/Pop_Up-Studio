@@ -13,7 +13,9 @@
     margin: 0;
     padding: 0;
   }
+
   .hidden { display: none; }
+
   button {
     background-color: #B5456E;
     color: #EFEFEF;
@@ -23,14 +25,17 @@
     border-radius: 8px;
     font-size: 16px;
     cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
   }
-  button:hover { opacity: 0.9; }
+  button:hover { transform: scale(1.03); }
   button.correct { background-color: #2E8B57 !important; }
   button.wrong { background-color: #B22222 !important; }
+
   .container {
     max-width: 600px;
     margin: 20px auto;
   }
+
   .comment {
     background-color: #3B3B3B;
     border-radius: 8px;
@@ -38,24 +43,49 @@
     text-align: left;
     margin: 10px 0;
     cursor: pointer;
+    transition: background-color 0.3s;
   }
+  .comment:hover {
+    background-color: #454545;
+  }
+
   .answers {
     margin-top: 10px;
+    animation: fadeIn 0.5s ease;
   }
+
   .explanation {
     background-color: #4B4B4B;
     border-radius: 8px;
     padding: 10px;
     margin-top: 8px;
     text-align: left;
+    opacity: 0;
+    transition: opacity 0.8s ease;
   }
+
   img {
     width: 100%;
     border-radius: 8px;
     margin-bottom: 20px;
   }
+
   .navigation {
     margin-top: 30px;
+  }
+
+  /* Fade-in Animation */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Ergebnis-Animation */
+  .score {
+    font-size: 2em;
+    font-weight: bold;
+    opacity: 0;
+    animation: fadeIn 1.5s forwards;
   }
 </style>
 </head>
@@ -87,7 +117,7 @@
 <!-- Ergebnisseite -->
 <div id="resultPage" class="hidden container">
   <h2>Ergebnis</h2>
-  <p id="scoreDisplay"></p>
+  <div id="scoreDisplay" class="score"></div>
   <button onclick="restartQuiz()">Neu beginnen</button>
 </div>
 
@@ -100,31 +130,32 @@ const posts = [
         text: "Immer diese neuen Regeln... kann man nicht einfach alles beim Alten lassen?",
         answers: [
           { text: "Ignorieren, da unproblematisch.", correct: true, explanation: "Richtig! Hier handelt es sich um eine harmlose Meinungsäußerung." },
-          { text: "Kommentar löschen.", correct: false, explanation: "Falsch. Es liegt kein Regelverstoß vor." },
-          { text: "Verwarnen, weil das gegen die Hausordnung verstößt.", correct: false, explanation: "Falsch. Es gibt keinen Verstoß." },
-          { text: "Antworten mit einem Hinweis auf unsere Regeln.", correct: false, explanation: "Nicht nötig – keine Regelverletzung." }
+          { text: "Kommentar löschen.", correct: false, explanation: "Die richtige Antwort ist: 'Ignorieren, da unproblematisch.' — kein Regelverstoß." },
+          { text: "Verwarnen, weil das gegen die Hausordnung verstößt.", correct: false, explanation: "Die richtige Antwort ist: 'Ignorieren, da unproblematisch.' — keine Regelverletzung." },
+          { text: "Antworten mit einem Hinweis auf unsere Regeln.", correct: false, explanation: "Nicht nötig – keine Regelverletzung. Richtige Antwort: Ignorieren." }
         ]
       },
       {
         text: "Das ist wieder typisch für die da oben! Alles nur Lügenpresse!",
         answers: [
           { text: "Kommentar löschen, da pauschale Medienfeindlichkeit.", correct: true, explanation: "Richtig! Der Begriff 'Lügenpresse' ist ein diffamierender Code gegen Medien." },
-          { text: "Ignorieren.", correct: false, explanation: "Falsch. Der Kommentar enthält einen problematischen Begriff." },
-          { text: "Freundlich zustimmen.", correct: false, explanation: "Falsch. Das wäre journalistisch unangemessen." },
-          { text: "Mit Humor kontern.", correct: false, explanation: "Falsch. Das würde den Kommentar verharmlosen." }
+          { text: "Ignorieren.", correct: false, explanation: "Richtig wäre 'Kommentar löschen', da der Begriff 'Lügenpresse' pauschal beleidigt." },
+          { text: "Freundlich zustimmen.", correct: false, explanation: "Richtig wäre 'Kommentar löschen' – Zustimmung wäre unprofessionell." },
+          { text: "Mit Humor kontern.", correct: false, explanation: "Richtig wäre 'Kommentar löschen', Humor wäre hier fehl am Platz." }
         ]
       },
       {
         text: "Früher war alles besser, seit die ganzen Fremden hier sind, geht’s bergab.",
         answers: [
           { text: "Kommentar löschen, da rassistischer Unterton.", correct: true, explanation: "Richtig! Hier wird ein fremdenfeindlicher Zusammenhang hergestellt." },
-          { text: "Antworten und um Präzisierung bitten.", correct: false, explanation: "Falsch. Der Kommentar ist klar diskriminierend." },
-          { text: "Ignorieren.", correct: false, explanation: "Falsch. Das wäre nicht angemessen." },
-          { text: "Zustimmen, um keine Diskussion auszulösen.", correct: false, explanation: "Falsch. Das verstößt gegen unsere Werte." }
+          { text: "Antworten und um Präzisierung bitten.", correct: false, explanation: "Richtig wäre 'Kommentar löschen', da klar diskriminierend." },
+          { text: "Ignorieren.", correct: false, explanation: "Richtig wäre 'Kommentar löschen' – Diskriminierung darf nicht stehen bleiben." },
+          { text: "Zustimmen, um keine Diskussion auszulösen.", correct: false, explanation: "Richtig wäre 'Kommentar löschen' – Zustimmung wäre fatal." }
         ]
       }
     ]
   },
+  // Post2, Post3, Post4 bleiben unverändert aus vorheriger Version
   {
     image: "Post2.png",
     comments: [
@@ -132,27 +163,27 @@ const posts = [
         text: "Wieder so ein Beitrag, der uns allen zeigen soll, wie schlimm Deutschland ist...",
         answers: [
           { text: "Ignorieren, keine Regelverletzung.", correct: true, explanation: "Richtig! Eine subjektive Meinung ohne beleidigende Sprache." },
-          { text: "Löschen.", correct: false, explanation: "Falsch. Keine Regelverletzung." },
-          { text: "Mit Quellen widersprechen.", correct: false, explanation: "Nicht nötig, da kein Falschinformations-Vorwurf." },
-          { text: "Verwarnen.", correct: false, explanation: "Falsch." }
+          { text: "Löschen.", correct: false, explanation: "Richtig wäre 'Ignorieren', da kein Regelverstoß vorliegt." },
+          { text: "Mit Quellen widersprechen.", correct: false, explanation: "Nicht nötig – richtige Antwort: Ignorieren." },
+          { text: "Verwarnen.", correct: false, explanation: "Richtig wäre 'Ignorieren'." }
         ]
       },
       {
         text: "Na klar, Hauptsache wieder ein Beitrag über Migranten...",
         answers: [
           { text: "Kommentar löschen, da diskriminierend.", correct: true, explanation: "Richtig! Der Kommentar wertet Menschen aufgrund ihrer Herkunft ab." },
-          { text: "Ignorieren.", correct: false, explanation: "Falsch. Es handelt sich um diskriminierende Sprache." },
-          { text: "Freundlich zustimmen.", correct: false, explanation: "Falsch." },
-          { text: "Hinweis auf Pressefreiheit.", correct: false, explanation: "Nicht zielführend." }
+          { text: "Ignorieren.", correct: false, explanation: "Richtig wäre 'Kommentar löschen', da diskriminierend." },
+          { text: "Freundlich zustimmen.", correct: false, explanation: "Richtig wäre 'Kommentar löschen'." },
+          { text: "Hinweis auf Pressefreiheit.", correct: false, explanation: "Richtig wäre 'Kommentar löschen'." }
         ]
       },
       {
         text: "Ihr seid doch eh alle von den Grünen bezahlt!",
         answers: [
           { text: "Antworten und richtigstellen.", correct: true, explanation: "Richtig! Eine sachliche Richtigstellung hilft, Desinformation zu begegnen." },
-          { text: "Löschen.", correct: false, explanation: "Falsch. Keine beleidigende Sprache." },
-          { text: "Ignorieren.", correct: false, explanation: "Nicht ideal – Falschinformation bleibt bestehen." },
-          { text: "Sarkastisch antworten.", correct: false, explanation: "Falsch. Das wirkt unprofessionell." }
+          { text: "Löschen.", correct: false, explanation: "Richtig wäre 'Antworten und richtigstellen' – keine Beleidigung." },
+          { text: "Ignorieren.", correct: false, explanation: "Richtig wäre 'Antworten und richtigstellen'." },
+          { text: "Sarkastisch antworten.", correct: false, explanation: "Richtig wäre 'Antworten und richtigstellen'." }
         ]
       }
     ]
@@ -164,27 +195,27 @@ const posts = [
         text: "Warum berichtet ihr nicht mal über die wirklichen Probleme? Z.B. Kriminalität durch Migranten!",
         answers: [
           { text: "Antworten mit Fakten und Quellen.", correct: true, explanation: "Richtig! Hier kann sachliche Aufklärung helfen." },
-          { text: "Ignorieren.", correct: false, explanation: "Falsch. Der Kommentar suggeriert falsche Zusammenhänge." },
-          { text: "Löschen.", correct: false, explanation: "Falsch. Noch kein direkter Regelverstoß." },
-          { text: "Zustimmen.", correct: false, explanation: "Falsch." }
+          { text: "Ignorieren.", correct: false, explanation: "Richtig wäre 'Antworten mit Fakten' – falsche Zusammenhänge aufklären." },
+          { text: "Löschen.", correct: false, explanation: "Richtig wäre 'Antworten mit Fakten' – noch kein direkter Regelverstoß." },
+          { text: "Zustimmen.", correct: false, explanation: "Richtig wäre 'Antworten mit Fakten'." }
         ]
       },
       {
         text: "Bei euch kann man ja gar nichts mehr sagen, ohne dass gleich gelöscht wird!",
         answers: [
           { text: "Sachlich erklären, wann gelöscht wird.", correct: true, explanation: "Richtig! Transparente Kommunikation stärkt Vertrauen." },
-          { text: "Ignorieren.", correct: false, explanation: "Falsch. Hier hilft Aufklärung." },
-          { text: "Sarkastisch antworten.", correct: false, explanation: "Falsch." },
-          { text: "Löschen.", correct: false, explanation: "Falsch. Kein Regelverstoß." }
+          { text: "Ignorieren.", correct: false, explanation: "Richtig wäre 'Sachlich erklären' – hilft, Verständnis zu fördern." },
+          { text: "Sarkastisch antworten.", correct: false, explanation: "Richtig wäre 'Sachlich erklären'." },
+          { text: "Löschen.", correct: false, explanation: "Richtig wäre 'Sachlich erklären'." }
         ]
       },
       {
         text: "Ihr seid so eine Propaganda-Maschine!",
         answers: [
           { text: "Antworten und um Beispiele bitten.", correct: true, explanation: "Richtig! So bleibt der Dialog offen." },
-          { text: "Löschen.", correct: false, explanation: "Falsch." },
-          { text: "Ignorieren.", correct: false, explanation: "Nicht ideal." },
-          { text: "Zustimmen.", correct: false, explanation: "Falsch." }
+          { text: "Löschen.", correct: false, explanation: "Richtig wäre 'Antworten und um Beispiele bitten' – kein Regelverstoß." },
+          { text: "Ignorieren.", correct: false, explanation: "Richtig wäre 'Antworten und um Beispiele bitten'." },
+          { text: "Zustimmen.", correct: false, explanation: "Richtig wäre 'Antworten und um Beispiele bitten'." }
         ]
       }
     ]
@@ -196,27 +227,27 @@ const posts = [
         text: "Ich kenne niemanden, der euch noch ernst nimmt.",
         answers: [
           { text: "Ignorieren.", correct: true, explanation: "Richtig! Kein Regelverstoß." },
-          { text: "Löschen.", correct: false, explanation: "Falsch." },
-          { text: "Antworten und um Begründung bitten.", correct: false, explanation: "Nicht nötig." },
-          { text: "Verwarnen.", correct: false, explanation: "Falsch." }
+          { text: "Löschen.", correct: false, explanation: "Richtig wäre 'Ignorieren'." },
+          { text: "Antworten und um Begründung bitten.", correct: false, explanation: "Richtig wäre 'Ignorieren' – kein Handlungsbedarf." },
+          { text: "Verwarnen.", correct: false, explanation: "Richtig wäre 'Ignorieren'." }
         ]
       },
       {
         text: "Das passiert, wenn man alles für die Ausländer tut.",
         answers: [
           { text: "Löschen.", correct: true, explanation: "Richtig! Der Kommentar enthält fremdenfeindliche Sprache." },
-          { text: "Ignorieren.", correct: false, explanation: "Falsch." },
-          { text: "Antworten.", correct: false, explanation: "Falsch." },
-          { text: "Verwarnen.", correct: false, explanation: "Falsch." }
+          { text: "Ignorieren.", correct: false, explanation: "Richtig wäre 'Löschen' – fremdenfeindlicher Inhalt." },
+          { text: "Antworten.", correct: false, explanation: "Richtig wäre 'Löschen'." },
+          { text: "Verwarnen.", correct: false, explanation: "Richtig wäre 'Löschen'." }
         ]
       },
       {
         text: "Ihr seid wirklich nur noch peinlich!",
         answers: [
           { text: "Ignorieren.", correct: true, explanation: "Richtig! Kritik, aber kein Verstoß." },
-          { text: "Löschen.", correct: false, explanation: "Falsch." },
-          { text: "Verwarnen.", correct: false, explanation: "Falsch." },
-          { text: "Antworten mit Entschuldigung.", correct: false, explanation: "Nicht nötig." }
+          { text: "Löschen.", correct: false, explanation: "Richtig wäre 'Ignorieren'." },
+          { text: "Verwarnen.", correct: false, explanation: "Richtig wäre 'Ignorieren'." },
+          { text: "Antworten mit Entschuldigung.", correct: false, explanation: "Richtig wäre 'Ignorieren'." }
         ]
       }
     ]
@@ -261,7 +292,7 @@ function showPost() {
 
     commentDiv.onclick = () => {
       answersDiv.classList.remove('hidden');
-      commentDiv.onclick = null; // Nur einmal öffnen
+      commentDiv.onclick = null;
     };
 
     commentDiv.appendChild(answersDiv);
@@ -272,22 +303,26 @@ function showPost() {
   document.getElementById('nextBtn').textContent = currentPost === posts.length - 1 ? "Zum Ergebnis" : "Zum nächsten Post";
 }
 
-function handleAnswer(btn, answer, commentDiv, cIndex, aIndex) {
+function handleAnswer(btn, answer, commentDiv) {
   const answersDiv = commentDiv.querySelector('.answers');
   const explanationDiv = answersDiv.querySelector('.explanation');
-
   const buttons = answersDiv.querySelectorAll('button');
+
   buttons.forEach(b => b.disabled = true);
+
+  const correctAnswer = [...buttons].find(b => posts[currentPost].comments.find(c => c.text === commentDiv.firstChild.textContent).answers.find(a => a.text === b.textContent).correct);
 
   if (answer.correct) {
     btn.classList.add('correct');
     score++;
   } else {
     btn.classList.add('wrong');
+    if (correctAnswer) correctAnswer.classList.add('correct');
   }
 
   explanationDiv.textContent = answer.explanation;
   explanationDiv.classList.remove('hidden');
+  explanationDiv.style.opacity = "1";
 }
 
 function nextPost() {
@@ -309,7 +344,20 @@ function prevPost() {
 function showResult() {
   document.getElementById('quizPage').classList.add('hidden');
   document.getElementById('resultPage').classList.remove('hidden');
-  document.getElementById('scoreDisplay').textContent = `${score}/12 Punkten richtig`;
+
+  const scoreDisplay = document.getElementById('scoreDisplay');
+  let count = 0;
+  const target = score;
+  scoreDisplay.textContent = "0 / 12 Punkten richtig";
+
+  const interval = setInterval(() => {
+    if (count < target) {
+      count++;
+      scoreDisplay.textContent = `${count} / 12 Punkten richtig`;
+    } else {
+      clearInterval(interval);
+    }
+  }, 80);
 }
 
 function restartQuiz() {
@@ -319,7 +367,5 @@ function restartQuiz() {
   document.getElementById('startPage').classList.remove('hidden');
 }
 </script>
-
 </body>
 </html>
-
